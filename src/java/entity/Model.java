@@ -24,22 +24,24 @@ public class Model implements Serializable{
     private int size;
     private int amount;
     private int price;
+    private String pathToImage;
+
+    @Override
+    public String toString() {
+        return "Model{" + "id=" + id + ", name=" + name + ", brand=" + brand + ", size=" + size + ", amount=" + amount + ", price=" + price + ", pathToImage=" + pathToImage + '}';
+    }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.id);
-        hash = 83 * hash + Objects.hashCode(this.name);
-        hash = 83 * hash + Objects.hashCode(this.size);
-        hash = 83 * hash + this.amount;
-        hash = 83 * hash + this.price;
-        hash = 83 * hash + Objects.hashCode(this.brand);
+        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.name);
+        hash = 59 * hash + Objects.hashCode(this.brand);
+        hash = 59 * hash + this.size;
+        hash = 59 * hash + this.amount;
+        hash = 59 * hash + this.price;
+        hash = 59 * hash + Objects.hashCode(this.pathToImage);
         return hash;
-    }
-
-    @Override
-    public String toString() {
-        return "Model{" + "id=" + id + ", name=" + name + ", size=" + size + ", amount=" + amount + ", price=" + price + ", brand=" + brand + '}';
     }
 
     @Override
@@ -54,6 +56,9 @@ public class Model implements Serializable{
             return false;
         }
         final Model other = (Model) obj;
+        if (this.size != other.size) {
+            return false;
+        }
         if (this.amount != other.amount) {
             return false;
         }
@@ -63,10 +68,10 @@ public class Model implements Serializable{
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.size, other.size)) {
+        if (!Objects.equals(this.brand, other.brand)) {
             return false;
         }
-        if (!Objects.equals(this.brand, other.brand)) {
+        if (!Objects.equals(this.pathToImage, other.pathToImage)) {
             return false;
         }
         if (!Objects.equals(this.id, other.id)) {
@@ -89,6 +94,14 @@ public class Model implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public int getSize() {
@@ -115,12 +128,12 @@ public class Model implements Serializable{
         this.price = price;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getPathToImage() {
+        return pathToImage;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setPathToImage(String pathToImage) {
+        this.pathToImage = pathToImage;
     }
 
     

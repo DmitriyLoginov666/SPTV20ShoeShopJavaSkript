@@ -8,8 +8,12 @@ package servlets;
 import entity.Model;
 import entity.Role;
 import entity.User;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -24,6 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import jsontools.ModelJsonBuilder;
 import session.ModelFacade;
 import session.UserRolesFacade;
@@ -76,6 +81,25 @@ public class ManagerServlet extends HttpServlet {
         String path = request.getServletPath();
         switch(path) {
             case "/addModel":
+                Part part = request.getPart("imageFile");
+                StringBuilder pathToUploadUserDir = new StringBuilder();
+                pathToUploadUserDir.append("D:\\uploadDir\\JAVASHOP") 
+                                   .append(File.separator)
+                                   .append(authUser.getId().toString()); 
+                File mkDirFile = new File(pathToUploadUserDir.toString());
+                mkDirFile.mkdirs();
+                StringBuilder pathToUploadFile = new StringBuilder();
+                pathToUploadFile.append(pathToUploadUserDir.toString())
+                                .append(File.separator)
+                                .append(getFileName(part));
+                File file = new File(pathToUploadFile.toString());
+                try(InputStream fileContent = part.getInputStream()){ 
+                     Files.copy(
+                             fileContent,
+                             file.toPath(),
+                             StandardCopyOption.REPLACE_EXISTING 
+                     );
+                 }
                 String name = request.getParameter("name");
                 String brand = request.getParameter("brand");
                 String size = request.getParameter("size");
@@ -87,6 +111,7 @@ public class ManagerServlet extends HttpServlet {
                 model.setSize(Integer.parseInt(size));
                 model.setPrice(Integer.parseInt(price));
                 model.setAmount(Integer.parseInt(amount));
+                model.setPathToImage(pathToUploadFile.toString());
                 modelFacade.create(model);
                 job.add("info", "Обувь добавлена!");
                 job.add("status", true);
@@ -130,6 +155,18 @@ public class ManagerServlet extends HttpServlet {
                 }
                 break;
         }
+    }
+        private String getFileName(Part part){
+        final String partHeader = part.getHeader("content-disposition");
+        for (String content : part.getHeader("content-disposition").split(";")){
+            if(content.trim().startsWith("filename")){
+                return content
+                        .substring(content.indexOf('=')+1)
+                        .trim()
+                        .replace("\"",""); 
+            }
+        }
+        return null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

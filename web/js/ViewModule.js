@@ -12,7 +12,7 @@ class ViewModule {
                     <img src="Images/data.jpg" alt="Avatar" class="avatar">
                 </div>
                 
-                <div class="container">
+                <div class="cont">
                     <form method="post" class="form">
                     <label><b>Username</b></label>
                     <input id="username" name="username" type="username" required> <br>
@@ -45,6 +45,42 @@ class ViewModule {
             viewModule.showRegistrationForm();
         });
     };
+    
+    
+    listShoes(listShoes){
+        let content = document.getElementById('content');
+        content.innerHTML = "";
+        let list = document.createElement('div');
+        list.classList.add('d-flex');
+        list.classList.add('justify-content-center');
+        content.appendChild(list);
+        for(let i = 0; i < listShoes.length; i++){
+            list.innerHTML +=  
+            `<div class="container">
+                <div class="card">
+                  <div class="imgBx">
+                    <img src="insertFile/${listShoes[i].pathToImage}">
+                  </div>
+                  <div class="contentBx">
+                    <h2>${listShoes[i].name}</h2>
+                    <h2>${listShoes[i].brand}</h2>
+                    <div class="size">
+                      <h3>Размер :</h3>
+                      <span>${listShoes[i].size}</span>
+                    </div>
+                    <div class="size">
+                      <h3>Количество :</h3>
+                      <span>${listShoes[i].amount}</span>
+                    </div>
+                    <div class="size">
+                      <h3>Цена :</h3>
+                      <span>${listShoes[i].price}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+        }
+    }
     showRegistrationForm() {
         document.getElementById('info').innerHTML = "";
         const content = document.getElementById('content');
@@ -125,6 +161,9 @@ class ViewModule {
                 <div class="wrap-input100 validate-input" >
                     <input class="input100" id="amount" name="amount" placeholder="Amount">
                 </div>
+                <div class="wrap-input100 validate-input" >
+                    <input class="input100" type="file" id="image_file" name="imageFile">
+                </div>
                 <div class="container-login100-form-btn">
                     <button class="login100-form-btn" "id="add-model" type="submit">Добавить обувь</button>
                 </div>
@@ -135,6 +174,10 @@ class ViewModule {
             managerModule.createModel();
         });
     }
+    
+    
+    
+    
     showEditModel() {
         const content = document.getElementById('content');
         content.innerHTML = 

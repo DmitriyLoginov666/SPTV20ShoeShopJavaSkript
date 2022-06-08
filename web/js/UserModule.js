@@ -43,6 +43,28 @@ class UserModule{
                 });
     }    
     
+    getListModel(){
+        let promiseGetListModel = fetch('getListModel',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            credentials: 'include'
+        });
+        promiseGetListModel.then(response => response.json())
+                          .then(response =>{
+                              if(response.status){
+                                  document.getElementById('info').innerHTML = response.info;
+                                  viewModule.listShoes(response.listShoes);
+                              }else{
+                                  document.getElementById('info').innerHTML = response.info;
+                              }
+                          })
+                          .catch(error => {
+                              document.getElementById('info').innerHTML = "Ошибка сервера (getListModel)"+error;
+                          });
+    }
+    
     buyShoe(){
         const id = document.getElementById('select_models').value;
         const buyShoe = {

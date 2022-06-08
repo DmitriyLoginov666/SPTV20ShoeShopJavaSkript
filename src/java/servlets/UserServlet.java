@@ -34,7 +34,8 @@ import tools.PasswordProtected;
 @WebServlet(name = "UserServlet", urlPatterns = {
     "/editProfile",
     "/buyShoe",
-    "/getListBuyModels"
+    "/getListBuyModels",
+    "/getListModel"
     
 })
 public class UserServlet extends HttpServlet {
@@ -98,6 +99,23 @@ public class UserServlet extends HttpServlet {
                 try(PrintWriter out = response.getWriter()) {
                     out.println(job.build().toString());
                 }
+                break;
+            case "/getListModel":
+                List<Model> listShoes = modelFacade.findAll();
+                if(listShoes.isEmpty()){
+                    job.add("listShoes", "");
+                    job.add("status", true).add("info", "Список обуви пуст!");
+                    try (PrintWriter out = response.getWriter()) {
+                      out.println(job.build().toString());
+                    } 
+                    break;
+                }
+                mjb = new ModelJsonBuilder();
+                job.add("listShoes", mjb.getJsonArrayModel(listShoes));
+                job.add("status", true).add("info", "");
+                try (PrintWriter out = response.getWriter()) {
+                  out.println(job.build().toString());
+                } 
                 break;
             case "/buyShoe":
                 JsonReader jsonReader = Json.createReader(request.getReader());//Покупка обуви
