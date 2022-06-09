@@ -8,6 +8,11 @@ import {managerModule} from './ManagerModule.js';
 
 export{checkMenuPanel};
 
+const shop_income = document.getElementById("shop_income");
+shop_income.addEventListener("click",(e)=>{
+    e.preventDefault();
+    adminModule.getIncome();
+});
 const list_model = document.getElementById("list_model");
 list_model.addEventListener("click",(e)=>{
     e.preventDefault();

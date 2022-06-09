@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import entity.History;
 import entity.Model;
 import entity.Role;
 import entity.User;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -31,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import jsontools.UserJsonBuilder;
 import jsontools.RoleJsonBuilder;
+import session.HistoryFacade;
 import session.ModelFacade;
 import session.RoleFacade;
 import session.UserFacade;
@@ -45,6 +49,8 @@ import tools.PasswordProtected;
     "/getRoles",
     "/getUsersMap",
     "/setUserRole",
+    "/getIncome",
+    "/getIncomePerMonth"
     
     
 })
@@ -53,7 +59,7 @@ public class AdminServlet extends HttpServlet {
     @EJB private UserFacade userFacade;
     @EJB private RoleFacade roleFacade;
     @EJB private UserRolesFacade userRolesFacade;
-    @EJB private ModelFacade modelFacade;
+    @EJB private HistoryFacade historyFacade;
     
     private PasswordProtected pp = new PasswordProtected();
     
@@ -132,12 +138,43 @@ public class AdminServlet extends HttpServlet {
                     out.println(job.build().toString());
                 }
                 break;
+                
+            case "/getIncome":
+                int income=0;
+                List<History> incomeModel= historyFacade.findAll();
+                for (int i = 0; i < incomeModel.size(); i++) {
+                income+=incomeModel.get(i).getModel().getPrice();
+                }
+                job.add("income", income);
+                job.add("status", true).add("info", "");
+                try (PrintWriter out = response.getWriter()) {
+                  out.println(job.build().toString());
+                }
+                break;
+            case "/getIncomePerMonth":
+                int incomePerMonth=0;
+                JsonReader jsonReader = Json.createReader(request.getReader());
+                JsonObject jo = jsonReader.readObject();
+                String month = jo.getString("month");
+                List<History> history= historyFacade.findAll();
+                for (int i = 0; i < history.size(); i++) {
+                    Date date=history.get(i).getPurchaseModel();
+                    boolean toSum= summator(date,Integer.parseInt(month)-1,2022);
+                    if (history.get(i)!=null & toSum){
+                        incomePerMonth+=history.get(i).getModel().getPrice();
+                    }
+                }
+                job.add("incomePerMonth", incomePerMonth);
+                job.add("status", true).add("info", "");
+                try (PrintWriter out = response.getWriter()) {
+                  out.println(job.build().toString());
+                }
             case "/setUserRole":
                 try {
-                    JsonReader jsonReader = Json.createReader(request.getReader());
-                    JsonObject jo = jsonReader.readObject();
-                    String userId = jo.getString("userId","");
-                    String roleId = jo.getString("roleId","");
+                    JsonReader jsonReader1 = Json.createReader(request.getReader());
+                    JsonObject jo1 = jsonReader1.readObject();
+                    String userId = jo1.getString("userId","");
+                    String roleId = jo1.getString("roleId","");
                     User user = userFacade.find(Long.parseLong(userId));
                     if("admin".equals(user.getUsername())){
                         job.add("status",false);
@@ -164,7 +201,17 @@ public class AdminServlet extends HttpServlet {
         }
         
     }
-
+        private boolean summator(Date date, int chosenMonth,int years) {
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(date);
+        int month=cal.get(Calendar.MONTH);
+        int year=cal.get(Calendar.YEAR);
+        if (month==chosenMonth & year==years) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

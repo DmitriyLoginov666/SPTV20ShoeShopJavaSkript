@@ -140,6 +140,55 @@ class AdminModule{
             select_roles.add(option);
         };
     }
+    
+    
+    getIncome(){
+        let promiseGetIncome = fetch('getIncome',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            credentials: 'include'
+        });
+        promiseGetIncome.then(response => response.json())
+                          .then(response =>{
+                              if(response.status){
+                                  document.getElementById('info').innerHTML = response.info;
+                                  viewModule.showIncome(response.income);
+                              }else{
+                                  document.getElementById('info').innerHTML = response.info;
+                              }
+                          })
+                          .catch(error => {
+                              document.getElementById('info').innerHTML = "Ошибка сервера (getIncome)"+error;
+                          });
+    }
+    getIncomePerMonth(){
+        const month = document.getElementById('select_month').value;
+        const monthIncome = {
+            "month":month
+        };
+        let promiseGetIncomePerMonth = fetch('getIncomePerMonth',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            credentials: 'include',
+            body: JSON.stringify(monthIncome)
+        });
+        promiseGetIncomePerMonth.then(response => response.json())
+                          .then(response =>{
+                              if(response.status){
+                                  document.getElementById('info').innerHTML = response.info;
+                                  viewModule.showIncomePerMonth(response.incomePerMonth);
+                              }else{
+                                  document.getElementById('info').innerHTML = response.info;
+                              }
+                          })
+                          .catch(error => {
+                              document.getElementById('info').innerHTML = "Ошибка сервера (getIncomePerMonth)"+error;
+                          });
+    }
 
 }
 const adminModule = new AdminModule();

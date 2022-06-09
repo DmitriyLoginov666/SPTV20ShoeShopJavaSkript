@@ -47,6 +47,60 @@ class ViewModule {
     };
     
     
+    showIncome(income){
+        let content = document.getElementById('content');
+        content.innerHTML =`<div class="shoe-edit-container">
+                <div class="top-content">
+                    <span class="model-edit-title">Доход за все время</span>
+                </div>
+                <div class="mid-content">
+                    <h2>${income} $</h2>
+                    <h1 class="card-subtitle">Доходы за определенный месяц: </h1>
+                    <select name="chosenMonth" id="select_month" class="form-select" aria-label="months">
+                        <option selected>Выберите месяц</option>
+                        <option value="1">Январь</option>
+                        <option value="2">Февраль</option>
+                        <option value="3">Март</option>
+                        <option value="4">Апрель</option>
+                        <option value="5">Май</option>
+                        <option value="6">Июнь</option>
+                        <option value="7">Июль</option>
+                        <option value="8">Август</option>
+                        <option value="9">Сентябрь</option>
+                        <option value="10">Октябрь</option>
+                        <option value="11">Ноябрь</option>
+                        <option value="12">Декабрь</option>
+                    </select>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit" id="income_per_month">Показать</button>
+                    </div>
+                </div>
+            </div>`;
+        const income_per_month = document.getElementById('income_per_month');
+        income_per_month.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminModule.getIncomePerMonth();
+        });
+    }
+    showIncomePerMonth(incomePerMonth){
+        let content = document.getElementById('content');
+        content.innerHTML =`<div class="shoe-edit-container">
+                <div class="top-content">
+                    <span class="model-edit-title">Доход за выбранный месяц</span>
+                </div>
+                <div class="mid-content">
+                    <h2>${incomePerMonth} $</h2>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit" id="income">Назад</button>
+                    </div>
+                </div>
+            </div>`;
+       const income = document.getElementById('income');
+        income.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminModule.getIncome();
+        });
+    }
     listShoes(listShoes){
         let content = document.getElementById('content');
         content.innerHTML = "";
